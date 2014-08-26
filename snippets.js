@@ -1,3 +1,4 @@
+(function(undefined) {
 	// Extensions
 	String.prototype.trim = String.prototype.trim || function() { return this.replace(/^\s+|\s+$/g, ''); }
 	
@@ -6,13 +7,14 @@
 	Object.prototype.mpathSet = function(path, value) { var m = this; var mp = path.split('.').select(function(v) { return v.trim(); }); while(mp.length > 1) { m = m[mp.shift()]; } m[mp[0]] = value; };
 	Object.prototype.applySettings = function(settings) { for (var m in settings) { this[m] = settings[m]; } };
 	Object.prototype.applyConfig = function(config) { for (var m in config) { if (!(m in this)) { this[m] = config[m]; } } };
+	Object.prototype.clone = function(deep) { if (this === undefined) { return undefined; } deep = deep && typeof(this) === 'object'; var result = {}; for (var m in this) { result[m] = (deep ? Object.prototype.clone.call(this[m]) : this[m]); } return result; };
 	
 	Array.prototype.each = function(action) { for (var i = 0; i < this.length; i++) { action(this[i], i); } };
 	Array.prototype.remove = function(value) { for (var i = this.length - 1; i >= 0; i--) { if (this[i] === value) { this.splice(i, 1); } }	};
 	Array.prototype.select = function(func) { var newitems = new Array(); for (var i = 0; i < this.length; i++) { newitems.push(func(this[i], i)); } return newitems; };
 	Array.prototype.where = function(func) { var newitems = new Array(); for (var i = 0; i < this.length; i++) { if (func(this[i])) { newitems.push(this[i]); } } return newitems; };
 	Array.prototype.first = function(func) { for (var i = 0; i < this.length; i++) { if (func(this[i])) { return this[i]; } } };
-	Array.prototype.last = function(func) { for (var i = this.length - 1; i >= 0; i--) { if (func(this[i]) { return this[i]; } } };
+	Array.prototype.last = function(func) { for (var i = this.length - 1; i >= 0; i--) { if (func(this[i])) { return this[i]; } } };
 	
 	var prefixes = ['', 'webkit', 'khtml', 'moz', 'ms', 'o'];
 	Object.prototype.getPrefixMember = function(name) { var t = this; return prefixes.select(function(p) {return p + name;}).first(function(n) { return n in t; }); };
@@ -26,8 +28,8 @@
 	Math.toRadians = function(degrees) { return degrees * Math.PI / 180; }
 	Math.toDegrees = function(radians) { return radians * 180 / Math.PI; }
 	Math.magnitude = function(x1, y1, x2, y2) { var x = x2 - x1; var y = y2 - y1; return Math.sqrt(x*x + y*y); }
-	Math.direction = function(x1, y1, x2, y2) { var x = x2 - x1; var y = y2 - y1; return Math.toDegrees((Math.atan2(x, -y)) + 630) % 360; }
-	Math.plot = function(direction, magnitude) { var rads = Math.toRadians((direction + 450) % 360); return { x: Math.cos(rads) * distance, y: Math.sin(rads) * distance } }
+	Math.direction = function(x1, y1, x2, y2) { var x = x2 - x1; var y = y2 - y1; return Math.toDegrees((Math.atan2(x, -y)) + 450) % 360; }
+	Math.plot = function(direction, magnitude) { var rads = Math.toRadians((direction + 630) % 360); return { x: Math.cos(rads) * magnitude, y: Math.sin(rads) * magnitude } }
 
 	// Templates
 	function loadTemplate(template, model) {
@@ -45,7 +47,7 @@
 	}
 	
 	Element.prototype.prependTemplate = function(template, model) {
-		var content = loadTemplate(template, model), var mark = this.firstChild;
+		var content = loadTemplate(template, model), mark = this.firstChild;
 		for (var i = 0; i < content.length; i++) { this.insertBefore(content[i], mark); }
 	}
 	
@@ -76,4 +78,4 @@
 			detail: detail
 		}));
 	}
-	
+})();
